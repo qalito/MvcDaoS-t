@@ -1,20 +1,20 @@
 package com.repository;
 
 import com.entity.User;
+import com.service.UserService;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class SqlUserDao implements UserDao{
-    Connection connection =  SqlConnection.getConnection();
+public class SqlUserDao implements UserDao {
+    private Connection connection = SqlConnection.getConnection();
 
-    public SqlUserDao() throws SQLException, ClassNotFoundException {
-    }
 
     @Override
     public void insert(User user) {
-        try(PreparedStatement preparedStatement =connection.prepareStatement("INSER INTO USERS (NAME) VALUES (?)")){
-            preparedStatement.setString(1,user.getName());
+        try (PreparedStatement statement = connection.prepareStatement("INSERT INTO USERS (NAME) VALUES (?);")) {
+            statement.setString(1, user.getName());
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -22,9 +22,9 @@ public class SqlUserDao implements UserDao{
 
     @Override
     public void update(User user) {
-        try(PreparedStatement preparedStatement =connection.prepareStatement("UPDATE USERS SET NAME = ? WHERE ID = ?")){
-            preparedStatement.setLong(1,user.getId());
-            preparedStatement.setString(2,user.getName());
+        try (PreparedStatement statement = connection.prepareStatement("UPDATE USERS SET NAME = ? WHERE ID = ?")) {
+            statement.setLong(1, user.getId());
+            statement.setString(2, user.getName());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -32,9 +32,9 @@ public class SqlUserDao implements UserDao{
 
     @Override
     public void delete(User user) {
-        try(PreparedStatement preparedStatement =connection.prepareStatement("DELETE FROM USERS WHERE ID = ?")){
-            preparedStatement.setLong(1,user.getId());
-            preparedStatement.setString(2,user.getName());
+        try (PreparedStatement statement = connection.prepareStatement("DELETE FROM USERS WHERE ID = ?;")) {
+            statement.setLong(1, user.getId());
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -42,12 +42,18 @@ public class SqlUserDao implements UserDao{
 
     @Override
     public User getById(long id) {
-        try(PreparedStatement preparedStatement =connection.prepareStatement("SELECT * FROM USERS WHERE ID = ?")){
-            preparedStatement.setLong(1,id);
+        User user = new User();
+        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM USERS WHERE ID = ?")) {
+            statement.setLong(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                user.setId(resultSet.getInt("ID"));
+                user.setName(resultSet.getString("NAME"));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return user;
     }
 
     @Override

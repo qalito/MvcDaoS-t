@@ -8,14 +8,22 @@ public class SqlConnection {
     private static final String PASSWORD = "1111";
     private static Connection connection = null;
 
-    SqlConnection(Connection connection) throws SQLException {
+    private SqlConnection(Connection connection) {
         this.connection = connection;
     }
 
-    public static Connection getConnection() throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
+    public static Connection getConnection() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         if (connection == null) {
-            connection = (Connection) new SqlConnection(DriverManager.getConnection(URL, LOGIN, PASSWORD));
+            try {
+                new SqlConnection(DriverManager.getConnection(URL, LOGIN, PASSWORD));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return connection;
     }
