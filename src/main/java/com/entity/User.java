@@ -1,6 +1,6 @@
 package com.entity;
 
-public class Word {
+public class User {
     private long id;
     private String name;
 
@@ -32,7 +32,7 @@ public class Word {
 
     @Override
     public String toString() {
-        return "Word{" +
+        return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
