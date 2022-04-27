@@ -9,19 +9,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String insert(String name) {
-            User user = new User();
-            user.setName(name);
-            if (dao.insert(user)) {
-                return "User add in system!";
-            } else {
-                return "Error with insert user!";
-            }
+        User user = new User();
+        user.setName(name);
+        if (dao.insert(user)) {
+            return "User add in system!";
+        } else {
+            return "Error with insert user!";
+        }
     }
+
     @Override
     public String delete(long id) {
         User user = new User();
         user.setId(id);
-        if (dao.delete(user)){
+        if (dao.delete(user)) {
             return "User delete!";
         } else {
             return "Error with delete user!";
@@ -32,7 +33,7 @@ public class UserServiceImpl implements UserService {
     public String getUser(long id) {
         User user = dao.getById(id);
         if (user.equals(new User())) {
-            return  "User not found!";
+            return "User not found!";
         } else {
             return dao.getById(id).toString();
         }
@@ -42,12 +43,11 @@ public class UserServiceImpl implements UserService {
     public String update(long id, String name) {
         if (name == null || id == 0) {
             return "User name or id is null!";
-        }
-        else {
+        } else {
             User user = new User();
             user.setId(id);
             user.setName(name);
-            if (dao.update(user)){
+            if (dao.update(user)) {
                 return "User update!";
             } else {
                 return "Error with update user!";

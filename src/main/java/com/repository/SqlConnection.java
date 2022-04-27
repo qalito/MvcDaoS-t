@@ -30,6 +30,4 @@ public class SqlConnection {
     public Connection getConnection() {
         return connection;
     }
-
-
 }
