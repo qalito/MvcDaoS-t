@@ -2,9 +2,11 @@ package com.service;
 
 
 public interface UserService {
-    void insert(String name);
+    String insert(String name);
 
-    void delete(long id);
+    String delete(long id);
 
     String getUser(long id);
+
+    String update(long id, String name);
 }

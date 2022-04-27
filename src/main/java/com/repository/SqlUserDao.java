@@ -7,37 +7,47 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class SqlUserDao implements UserDao {
-    private Connection connection = SqlConnection.getConnection();
+    private Connection connection = SqlConnection.getInstance().getConnection();
 
 
     @Override
-    public void insert(User user) {
+    public boolean insert(User user) {
         try (PreparedStatement statement = connection.prepareStatement("INSERT INTO USERS (NAME) VALUES (?);")) {
             statement.setString(1, user.getName());
-            statement.executeUpdate();
+            if (statement.executeUpdate() > 0) {
+                return true;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     @Override
-    public void update(User user) {
+    public boolean update(User user) {
         try (PreparedStatement statement = connection.prepareStatement("UPDATE USERS SET NAME = ? WHERE ID = ?")) {
-            statement.setLong(1, user.getId());
-            statement.setString(2, user.getName());
+            statement.setString(1, user.getName());
+            statement.setLong(2, user.getId());
+            if (statement.executeUpdate() > 0) {
+                return true;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     @Override
-    public void delete(User user) {
+    public boolean delete(User user) {
         try (PreparedStatement statement = connection.prepareStatement("DELETE FROM USERS WHERE ID = ?;")) {
             statement.setLong(1, user.getId());
-            statement.executeUpdate();
+            if (statement.executeUpdate() > 0) {
+                return true;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     @Override
@@ -49,11 +59,12 @@ public class SqlUserDao implements UserDao {
             while (resultSet.next()) {
                 user.setId(resultSet.getInt("ID"));
                 user.setName(resultSet.getString("NAME"));
+                return user;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return user;
+        return new User();
     }
 
     @Override

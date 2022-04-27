@@ -8,30 +8,50 @@ public class UserServiceImpl implements UserService {
     private UserDao dao = new SqlUserDao();
 
     @Override
-    public void insert(String name) {
-        if (name.equals(null)) {
-        } else {
+    public String insert(String name) {
             User user = new User();
             user.setName(name);
-            dao.insert(user);
-        }
+            if (dao.insert(user)) {
+                return "User add in system!";
+            } else {
+                return "Error with insert user!";
+            }
     }
-
     @Override
-    public void delete(long id) {
+    public String delete(long id) {
         User user = new User();
         user.setId(id);
-        dao.delete(user);
+        if (dao.delete(user)){
+            return "User delete!";
+        } else {
+            return "Error with delete user!";
+        }
     }
 
     @Override
     public String getUser(long id) {
         User user = dao.getById(id);
-        System.out.println("User equals" + user.equals(null));
         if (user.equals(new User())) {
-            return null;
+            return  "User not found!";
         } else {
             return dao.getById(id).toString();
+        }
+    }
+
+    @Override
+    public String update(long id, String name) {
+        if (name == null || id == 0) {
+            return "User name or id is null!";
+        }
+        else {
+            User user = new User();
+            user.setId(id);
+            user.setName(name);
+            if (dao.update(user)){
+                return "User update!";
+            } else {
+                return "Error with update user!";
+            }
         }
     }
 }

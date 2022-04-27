@@ -17,14 +17,22 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getParameter("insertButton") != null) {
-            userService.insert(req.getParameter("input"));
-        } else if (req.getParameter("deleteButton") != null) {
-            userService.delete(Long.parseLong(req.getParameter("input")));
-        } else if (req.getParameter("selectButton") != null) {
-            req.setAttribute("user", userService.getUser(Long.parseLong(req.getParameter("input"))));
-        } else if (req.getParameter("updateButton") != null) {
-
+        try {
+            if (req.getParameter("insertButton") != null) {
+                req.setAttribute("text",
+                        userService.insert(req.getParameter("userName")));
+            } else if (req.getParameter("deleteButton") != null) {
+                req.setAttribute("text",
+                        userService.delete(Long.parseLong(req.getParameter("userId"))));
+            } else if (req.getParameter("selectButton") != null) {
+                req.setAttribute("text",
+                        userService.getUser(Long.parseLong(req.getParameter("userId"))));
+            } else if (req.getParameter("updateButton") != null) {
+                req.setAttribute("text",
+                        userService.update(Long.parseLong(req.getParameter("userId")), req.getParameter("userName")));
+            }
+        } catch (Exception e) {
+            req.setAttribute("text", "error");
         }
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("/index.jsp");
         requestDispatcher.forward(req, resp);
